@@ -6,6 +6,8 @@ public class MaintenanceTaskModel
 
 
     // Navigation Props
+    public virtual VehicleModel Vehicle { get; set; } = null!;
+
     public virtual ICollection<MaintenanceStepModel> MaintenanceSteps { get; set; } = [];
 
     public virtual ICollection<MaintenanceSupplyModel> MaintenanceSupplies { get; set; } = [];
