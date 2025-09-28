@@ -4,6 +4,8 @@ public class MaintenanceTaskModel
 {
     public int MaintenanceTaskId { get; set; }
 
+    public string Description { get; set; } = "";
+
 
     // Navigation Props
     public virtual VehicleModel Vehicle { get; set; } = null!;

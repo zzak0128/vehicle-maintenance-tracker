@@ -6,5 +6,11 @@ Accept: application/json
 GET {{VehicleMaintenanceTracker_HostAddress}}/vehicles/tasks/
 Accept: application/json
 
+GET {{VehicleMaintenanceTracker_HostAddress}}/vehicles/tasks/steps/
+Accept: application/json
+
+GET {{VehicleMaintenanceTracker_HostAddress}}/vehicles/tasks/supplies/
+Accept: application/json
+
 
 ###
