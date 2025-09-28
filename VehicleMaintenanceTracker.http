@@ -1,6 +1,10 @@
 @VehicleMaintenanceTracker_HostAddress = http://localhost:5228
 
-GET {{VehicleMaintenanceTracker_HostAddress}}/weatherforecast/
+GET {{VehicleMaintenanceTracker_HostAddress}}/vehicles/
 Accept: application/json
+
+GET {{VehicleMaintenanceTracker_HostAddress}}/vehicles/tasks/
+Accept: application/json
+
 
 ###
