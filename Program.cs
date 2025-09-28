@@ -42,7 +42,7 @@ app.MapGet("/vehicles/tasks/steps", async (AppDbContext db) => await db.Vehicles
 .ThenInclude(x => x.MaintenanceSteps)
 .ToListAsync());
 
-app.MapPost("/vehicles", async (AppDbContext db, vehicleDTO vehicle) =>
+app.MapPost("/vehicles", async (AppDbContext db, VehicleDTO vehicle) =>
 {
     db.Vehicles.Add(new VehicleModel
     {
@@ -56,9 +56,36 @@ app.MapPost("/vehicles", async (AppDbContext db, vehicleDTO vehicle) =>
     return Results.Created();
 });
 
+app.MapPatch("/vehicles/{id}", async (AppDbContext db, VehicleDTO vehicle, int id) =>
+{
+    VehicleModel? updateVehicle = await db.Vehicles.FindAsync(id);
+
+    if (updateVehicle == null)
+    {
+        return Results.NotFound();
+    }
+
+    updateVehicle.BrandName = vehicle.Brand;
+    updateVehicle.Color = vehicle.Color;
+    updateVehicle.Year = vehicle.Year;
+    updateVehicle.ModelName = vehicle.Model;
+
+    db.Vehicles.Update(updateVehicle);
+    await db.SaveChangesAsync();
+
+    return Results.Created();
+});
+
 app.MapDelete("/vehicles/{id}", async (AppDbContext db, int id) =>
 {
-    db.Vehicles.Remove(db.Vehicles.Find(id));
+    VehicleModel? deleteVehicle = await db.Vehicles.FindAsync(id);
+
+    if (deleteVehicle == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Vehicles.Remove(deleteVehicle);
     await db.SaveChangesAsync();
 
     return Results.Ok();
@@ -66,5 +93,7 @@ app.MapDelete("/vehicles/{id}", async (AppDbContext db, int id) =>
 
 app.Run();
 
-record vehicleDTO(string Model, string Color, int Year, string Brand);
+record VehicleDTO(string Model, string Color, int Year, string Brand);
+record UpdateVehicleDTO(int Id, string Model, string Color, int Year, string Brand);
+
 
