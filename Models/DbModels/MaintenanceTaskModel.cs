@@ -4,7 +4,11 @@ public class MaintenanceTaskModel
 {
     public int MaintenanceTaskId { get; set; }
 
+    public string Title { get; set; } = "";
+
     public string Description { get; set; } = "";
+
+    public string Frequency { get; set; } = "";
 
 
     // Navigation Props

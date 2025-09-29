@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using VehicleMaintenanceTracker;
 using VehicleMaintenanceTracker.Context;
+using VehicleMaintenanceTracker.Models.DTOs.Vehicles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,30 +27,14 @@ app.MapGet("/vehicles", async (AppDbContext db) => await db.Vehicles
 .ToListAsync())
 .WithName("GetAllVehicles");
 
-app.MapGet("/vehicles/{id}/tasks/", async (AppDbContext db, int id) => await db.Vehicles
-.Where(x => x.VehicleId == id)
-.Include(x => x.MaintenanceTasks)
-.ToListAsync())
-.WithName("GetAllVehicleMaintenanceTasks");
-
-app.MapGet("/vehicles/tasks/supplies", async (AppDbContext db) => await db.Vehicles
-.Include(x => x.MaintenanceTasks)
-.ThenInclude(x => x.MaintenanceSupplies)
-.ToListAsync());
-
-app.MapGet("/vehicles/tasks/steps", async (AppDbContext db) => await db.Vehicles
-.Include(x => x.MaintenanceTasks)
-.ThenInclude(x => x.MaintenanceSteps)
-.ToListAsync());
-
 app.MapPost("/vehicles", async (AppDbContext db, VehicleDTO vehicle) =>
 {
     db.Vehicles.Add(new VehicleModel
     {
-        ModelName = vehicle.Model,
+        ModelName = vehicle.ModelName,
         Color = vehicle.Color,
         Year = vehicle.Year,
-        BrandName = vehicle.Brand
+        BrandName = vehicle.BrandName
     });
 
     await db.SaveChangesAsync();
@@ -65,15 +50,15 @@ app.MapPatch("/vehicles/{id}", async (AppDbContext db, VehicleDTO vehicle, int i
         return Results.NotFound();
     }
 
-    updateVehicle.BrandName = vehicle.Brand;
+    updateVehicle.BrandName = vehicle.BrandName;
     updateVehicle.Color = vehicle.Color;
     updateVehicle.Year = vehicle.Year;
-    updateVehicle.ModelName = vehicle.Model;
+    updateVehicle.ModelName = vehicle.ModelName;
 
     db.Vehicles.Update(updateVehicle);
     await db.SaveChangesAsync();
 
-    return Results.Created();
+    return Results.Ok();
 });
 
 app.MapDelete("/vehicles/{id}", async (AppDbContext db, int id) =>
@@ -91,9 +76,23 @@ app.MapDelete("/vehicles/{id}", async (AppDbContext db, int id) =>
     return Results.Ok();
 });
 
+app.MapGet("/vehicles/{id}/tasks/", async (AppDbContext db, int id) => await db.Vehicles
+.Where(x => x.VehicleId == id)
+.Include(x => x.MaintenanceTasks)
+.ToListAsync())
+.WithName("GetAllVehicleMaintenanceTasks");
+
+app.MapGet("/vehicles/tasks/supplies", async (AppDbContext db) => await db.Vehicles
+.Include(x => x.MaintenanceTasks)
+.ThenInclude(x => x.MaintenanceSupplies)
+.ToListAsync());
+
+app.MapGet("/vehicles/tasks/steps", async (AppDbContext db) => await db.Vehicles
+.Include(x => x.MaintenanceTasks)
+.ThenInclude(x => x.MaintenanceSteps)
+.ToListAsync());
+
 app.Run();
 
-record VehicleDTO(string Model, string Color, int Year, string Brand);
-record UpdateVehicleDTO(int Id, string Model, string Color, int Year, string Brand);
 
 
